@@ -3,7 +3,7 @@ package games.omg.channeling;
 import org.bukkit.Material;
 
 public enum ChannelType {
-  TRAVEL_TIME("Travel Time", "The time it would take to travel by foot.", Material.IRON_BOOTS),
+  TRAVEL_TIME("Travel Time", "The time it would take to travel by foot.", Material.BAMBOO_CHEST_RAFT),
   WORLD_WARP("World Warp", "The time it would take to switch between worlds.", Material.ENDER_PEARL),
   EYE_OF_ENDER("Eye of Ender", "This might take a while.", Material.ENDER_EYE),
   IN_COMBAT("In Combat", "An extended time which occurs during combat.", Material.SKELETON_SKULL);
