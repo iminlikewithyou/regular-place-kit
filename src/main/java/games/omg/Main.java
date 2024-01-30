@@ -4,7 +4,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import games.omg.channeling.TeleportTools;
+import games.omg.channeling.ChannelingInventoryTest;
 import games.omg.chat.ChatHandler;
 import games.omg.command.CommandManager;
 import games.omg.server.MotdService;
@@ -27,7 +27,9 @@ public class Main extends JavaPlugin implements Listener {
 	public void onEnable() {
 		plugin = this;
 
-		register(new ChatHandler(), new TeleportTools(), new MotdService());
+		register(new ChatHandler(), new MotdService());
+
+		register(new ChannelingInventoryTest());
 
 		// registerCommand("tpa", new Tpa());	
 
