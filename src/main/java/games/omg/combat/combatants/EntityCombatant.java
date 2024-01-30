@@ -3,7 +3,7 @@ package games.omg.combat.combatants;
 import org.bukkit.entity.Entity;
 
 import games.omg.utils.EntityUtils;
-import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.Component;
 
 public class EntityCombatant extends Combatant {
   private final Entity entity;
@@ -17,7 +17,7 @@ public class EntityCombatant extends Combatant {
   }
 
   @Override
-  public TextComponent getName() {
+  public Component getName() {
     return EntityUtils.getDisplayNameComponent(entity);
   }
 

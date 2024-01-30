@@ -2,7 +2,7 @@ package games.omg.combat.combatants;
 
 import org.bukkit.entity.Entity;
 
-import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.Component;
 
 /**
  * Represents a combatant.
@@ -15,7 +15,7 @@ import net.kyori.adventure.text.TextComponent;
 public abstract class Combatant {
   long engagedAt = System.currentTimeMillis();
   
-  abstract TextComponent getName();
+  abstract Component getName();
 
   public long getEngagedAt() {
     return engagedAt;

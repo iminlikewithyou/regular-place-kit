@@ -1,7 +1,6 @@
 package games.omg.combat.combatants;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 
 public class DamageCombatant extends Combatant {
   private final String name;
@@ -11,7 +10,7 @@ public class DamageCombatant extends Combatant {
   }
 
   @Override
-  public TextComponent getName() {
+  public Component getName() {
     return Component.text(name);
   }
 
