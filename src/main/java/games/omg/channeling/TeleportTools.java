@@ -22,6 +22,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import games.omg.Main;
+import games.omg.channeling.states.ChannelStartedResult;
 import games.omg.menus.InventoryMenu;
 import games.omg.resources.Decorations;
 import games.omg.utils.StringUtils;
@@ -32,33 +33,40 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.md_5.bungee.api.ChatColor;
 
 public class TeleportTools implements Listener {
-  final private static String menuTitle = "Teleporting..";
-  private static HashMap<Player, ChannelingObject> channels = new HashMap<>();
+  private static HashMap<Player, Channel> channels = new HashMap<>();
 
-  public static TeleportReason channelTeleport(Player p, ChannelingObject channelingObject) {
-    if (p.getGameMode() == GameMode.CREATIVE || channelingObject.getStartingTime() <= 0) {
-      channelingObject.getFinishRunnable().run();
-      return TeleportReason.INSTANT_TELEPORT;
+  public static ChannelStartedResult channelTeleport(Player player, Channel channel) {
+    boolean isInstant = false;
+
+    if (player.getGameMode() == GameMode.CREATIVE) {
+      isInstant = true;
+    } else if (channel.isComplete()) {
+      isInstant = true;
     }
 
-    if (channelingObject.getStartingTime() < 10)
-      channelingObject.addChannelTime(new ExtendedChannelTime(10 - channelingObject.getStartingTime(), "Roadblock",
+    if (player.getGameMode() == GameMode.CREATIVE || channel.getStartingTime() <= 0) {
+      channel.getFinishRunnable().run();
+      return ChannelStartedResult.INSTANT_CHANNEL;
+    }
+
+    if (channel.getStartingTime() < 10)
+      channel.addChannelTime(new ExtendedChannelTime(10 - channel.getStartingTime(), "Roadblock",
           Material.PACKED_ICE, "All channels must either be instant or last at least 10 seconds."));
-    channels.put(p, channelingObject);
+    channels.put(player, channel);
 
-    if (TaskManager.isTaskRunning(p, "teleportation"))
-      return TeleportReason.ALREADY_TELEPORTING;
+    if (TaskManager.isTaskRunning(player, "teleportation"))
+      return ChannelStartedResult.ALREADY_CHANNELING;
 
-    InventoryMenu channelingMenu = new InventoryMenu(p, "ChannelingMenu", 9 * 3, menuTitle,
+    InventoryMenu channelingMenu = new InventoryMenu(player, "ChannelingMenu", 9 * 3, menuTitle,
         new InventoryMenu.InventoryClickHandler() {
 
           private void updateChannelingInventory(Inventory channelingInventory) {
-            if (!channels.containsKey(p))
+            if (!channels.containsKey(player))
               return;
 
             channelingInventory.clear();
 
-            ChannelingObject channel = channels.get(p);
+            Channel channel = channels.get(player);
             int center = (channelingInventory.getSize() - 1) / 2;
             int current = (int) (center - Math.floor(channel.getChannelTimes().size() / 2));
             boolean skipCenter = channel.getChannelTimes().size() % 2 == 0;
@@ -82,7 +90,7 @@ public class TeleportTools implements Listener {
               displayItem.setItemMeta(itemMeta);
 
               channelingInventory.setItem(current, displayItem);
-              p.updateInventory();
+              player.updateInventory();
               
               current++;
             }
@@ -96,11 +104,11 @@ public class TeleportTools implements Listener {
           @Override
           public void create(Inventory i) {
             updateChannelingInventory(i);
-            TaskManager.initTask(p, "teleportation",
+            TaskManager.initTask(player, "teleportation",
                 Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.getPlugin(), new Runnable() {
                   public void run() {
-                    if (!channelingObject.next()) {
-                      teleportComplete(p);
+                    if (!channel.next()) {
+                      teleportComplete(player);
                       return;
                     }
                     updateChannelingInventory(i);
@@ -110,9 +118,9 @@ public class TeleportTools implements Listener {
 
           @Override
           public void close(Inventory i) {
-            if (TaskManager.isTaskRunning(p, "teleportation")) {
-              teleportInterrupted(p);
-              p.sendMessage(Decorations.createSystemMessage(NamedTextColor.BLUE, "Teleport",
+            if (TaskManager.isTaskRunning(player, "teleportation")) {
+              teleportInterrupted(player);
+              player.sendMessage(Decorations.createSystemMessage(NamedTextColor.BLUE, "Teleport",
                   Component.text("You cancelled the teleport.")));
             }
           }
@@ -121,7 +129,7 @@ public class TeleportTools implements Listener {
     // ScoreboardTools.setGlobalPrefix(p, " ➱");
 
     // Main.updateScoreboard();
-    return TeleportReason.PREPARING_TELEPORT;
+    return ChannelStartedResult.CHANNEL_STARTED;
   }
 
   private static void teleportFinished(Player p, boolean complete) {
@@ -130,7 +138,7 @@ public class TeleportTools implements Listener {
     // Main.updateScoreboard();
     p.closeInventory();
     if (channels.containsKey(p)) {
-      ChannelingObject channel = channels.get(p);
+      Channel channel = channels.get(p);
       if (complete) {
         channel.getFinishRunnable().run();
       } else {
@@ -144,7 +152,7 @@ public class TeleportTools implements Listener {
     if (!channels.containsKey(p))
       return;
 
-    ChannelingObject channel = channels.get(p);
+    Channel channel = channels.get(p);
     for (ExtendedChannelTime ect2 : channel.getChannelTimes()) {
       if (ect2.getReason().equals(ect.getReason())) {
         ect2.setDescription(ect.getDescription());

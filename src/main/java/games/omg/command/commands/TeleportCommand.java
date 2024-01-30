@@ -13,16 +13,15 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import games.omg.Main;
-import games.omg.channeling.ChannelingObject;
-import games.omg.channeling.TeleportReason;
+import games.omg.channeling.Channel;
 import games.omg.channeling.TeleportTools;
+import games.omg.channeling.states.ChannelStartedResult;
 import games.omg.chat.SystemMessage;
 import games.omg.command.CommandMessage;
 import games.omg.command.RegularCommand;
 import games.omg.utils.PlayerUtils;
 import games.omg.utils.StringUtils;
 import games.omg.utils.TaskManager;
-import net.kyori.adventure.text.Component;
 import net.md_5.bungee.api.ChatColor;
 
 public class TeleportCommand extends RegularCommand implements Listener {
@@ -37,7 +36,7 @@ public class TeleportCommand extends RegularCommand implements Listener {
       return CommandMessage
           .from("You need to enter only a player name. (/" + label.toLowerCase() + " " + args[0] + ")");
     final Player player = PlayerUtils.getSearchedPlayer(args[0]);
-    if (player == null || !player.isOnline())
+    if (player == null)
       return CommandMessage.from("That is not a valid player.");
     if (player.equals(p))
       return CommandMessage.from("You can't teleport to yourself.");
@@ -71,7 +70,7 @@ public class TeleportCommand extends RegularCommand implements Listener {
       return CommandMessage.from("That player hasn't asked to teleport to you.");
     teleportAsk.remove(player);
     UUID uuid = p.getUniqueId();
-    ChannelingObject channel = new ChannelingObject(TeleportTools.getChannelingTimesBetweenPlayers(p, player),
+    Channel channel = new Channel(TeleportTools.getChannelingTimesBetweenPlayers(p, player),
         new Runnable() {
           @Override
           public void run() {
@@ -99,8 +98,8 @@ public class TeleportCommand extends RegularCommand implements Listener {
                 ChatColor.RESET + player.getName() + ChatColor.GRAY + " stopped channeling.").sendTo(teleportPlayer);
           }
         });
-    TeleportReason result = TeleportTools.channelTeleport(player, channel);
-    if (result == TeleportReason.ALREADY_TELEPORTING) {
+    ChannelStartedResult result = TeleportTools.channelTeleport(player, channel);
+    if (result == ChannelStartedResult.ALREADY_CHANNELING) {
       SystemMessage.from("Teleport",
           ChatColor.RESET + p.getName() + ChatColor.GRAY
               + " accepted your teleport request, but you are already channeling somewhere!")
@@ -111,7 +110,7 @@ public class TeleportCommand extends RegularCommand implements Listener {
         ChatColor.RESET + p.getName() + ChatColor.GRAY + " accepted your teleport request.").sendTo(player);
     return CommandMessage
         .from("Accepted " + ChatColor.RESET + player.getName() + ChatColor.GRAY + "'s teleport request."
-            + (result == TeleportReason.INSTANT_TELEPORT ? ""
+            + (result == ChannelStartedResult.INSTANT_CHANNEL ? ""
                 : " They will arrive in about " + ChatColor.RESET + StringUtils.getTextTime(channel.getStartingTime())
                     + ChatColor.GRAY + "."));
   }
