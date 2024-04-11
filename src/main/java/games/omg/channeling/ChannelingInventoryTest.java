@@ -3,22 +3,20 @@ package games.omg.channeling;
 import java.util.Arrays;
 
 import org.bukkit.Material;
-import org.bukkit.Server;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import games.omg.menus.InventoryMenu;
+import games.omg.resources.DecoratedItem;
 import games.omg.resources.Decorations;
 import games.omg.resources.ServerColors;
 import games.omg.utils.PlayerUtils;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 
 public class ChannelingInventoryTest implements Listener {
@@ -29,94 +27,34 @@ public class ChannelingInventoryTest implements Listener {
       @Override
       public void create(Inventory inventory) {
         // Party sign
-        ItemStack partySign = new ItemStack(Material.OAK_HANGING_SIGN);
-        ItemMeta partySignMeta = partySign.getItemMeta();
-        partySignMeta.displayName(
-          Component.text("Party")
-            .decoration(TextDecoration.ITALIC, false)
-            .color(ServerColors.PRIMARY_COLOR)
-        );
-        partySignMeta.lore(Arrays.asList(
-          Component.text("The players who are")
-            .decoration(TextDecoration.ITALIC, false)
-            .color(ServerColors.SECONDARY_COLOR),
-          Component.text("warping.")
-            .decoration(TextDecoration.ITALIC, false)
-            .color(ServerColors.SECONDARY_COLOR)
+        ItemStack partySign = DecoratedItem.create(Material.OAK_HANGING_SIGN, "Party", Arrays.asList(
+          "The players who are",
+          "warping."
         ));
-        partySign.setItemMeta(partySignMeta);
         inventory.setItem(1, partySign);
 
         // Warping ender pearl
-        ItemStack enderPearl = new ItemStack(Material.ENDER_PEARL);
-        ItemMeta enderPearlMeta = enderPearl.getItemMeta();
-        enderPearlMeta.displayName(
-          Component.text("Warping")
-            .decoration(TextDecoration.ITALIC, false)
-            .color(ServerColors.PRIMARY_COLOR)
-        );
-        enderPearlMeta.lore(Arrays.asList(
-          Component.text("The party is warping.")
-            .decoration(TextDecoration.ITALIC, false)
-            .color(ServerColors.SECONDARY_COLOR)
-        ));
-        enderPearl.setItemMeta(enderPearlMeta);
+        ItemStack enderPearl = DecoratedItem.create(Material.ENDER_PEARL, "Warping", "The party is warping.");
         inventory.setItem(10, enderPearl);
 
         // Headed to sign
-        ItemStack toSign = partySign.clone();
-        ItemMeta toSignMeta = toSign.getItemMeta();
-        toSignMeta.displayName(
-          Component.text("Headed To")
-            .decoration(TextDecoration.ITALIC, false)
-            .color(ServerColors.PRIMARY_COLOR)
-        );
-        toSignMeta.lore(Arrays.asList(
-          Component.text("The location the party")
-            .decoration(TextDecoration.ITALIC, false)
-            .color(ServerColors.SECONDARY_COLOR),
-          Component.text("is headed to.")
-            .decoration(TextDecoration.ITALIC, false)
-            .color(ServerColors.SECONDARY_COLOR)
+        ItemStack toSign = DecoratedItem.create(Material.OAK_HANGING_SIGN, "Headed To", Arrays.asList(
+          "The location the party",
+          "is headed to."
         ));
-        toSign.setItemMeta(toSignMeta);
         inventory.setItem(7, toSign);
 
         // Location compass
-        ItemStack compass = new ItemStack(Material.COMPASS);
-        ItemMeta compassMeta = compass.getItemMeta();
-        compassMeta.displayName(
-          Component.text("Location")
-            .decoration(TextDecoration.ITALIC, false)
-            .color(ServerColors.PRIMARY_COLOR)
-        );
-        compassMeta.lore(Arrays.asList(
-          Component.text("The party is warping to")
-            .decoration(TextDecoration.ITALIC, false)
-            .color(ServerColors.SECONDARY_COLOR),
-          Component.text("this location.")
-            .decoration(TextDecoration.ITALIC, false)
-            .color(ServerColors.SECONDARY_COLOR)
+        ItemStack compass = DecoratedItem.create(Material.COMPASS, "Location", Arrays.asList(
+          "The party is warping to",
+          "this location."
         ));
-        compass.setItemMeta(compassMeta);
         inventory.setItem(16, compass);
 
         int maxPartyShown = 3;
         int partyListStartIndex = 11;
 
-        ItemStack location = new ItemStack(Material.RED_BED);
-        ItemMeta locationMeta = location.getItemMeta();
-        locationMeta.displayName(
-          Component.text("Home")
-            .decoration(TextDecoration.ITALIC, false)
-            .color(ServerColors.PRIMARY_COLOR)
-        );
-        locationMeta.lore(Arrays.asList(
-          Component.text("Home sweet home.")
-            .decoration(TextDecoration.ITALIC, false)
-            .color(ServerColors.SECONDARY_COLOR)
-        ));
-        location.setItemMeta(locationMeta);
+        ItemStack location = DecoratedItem.create(Material.RED_BED, "Home", "Home sweet home.");
         inventory.setItem(15, location);
 
         // create a player head of the user
@@ -137,20 +75,8 @@ public class ChannelingInventoryTest implements Listener {
         inventory.setItem(11, playerHead);
 
         // Time remaining clock
-        ItemStack clock = new ItemStack(Material.CLOCK);
-        ItemMeta clockMeta = clock.getItemMeta();
-        clockMeta.displayName(
-          Component.text("Channeling..")
-            .decoration(TextDecoration.ITALIC, false)
-            .color(ServerColors.PRIMARY_COLOR)
-        );
-        clockMeta.lore(Arrays.asList(
-          Component.text("Warping in 1:34..")
-            .decoration(TextDecoration.ITALIC, false)
-            .color(ServerColors.SECONDARY_COLOR)
-        ));
+        ItemStack clock = DecoratedItem.create(Material.CLOCK, "Channeling..", "Warping in 1:34..");
         clock.setAmount(64);
-        clock.setItemMeta(clockMeta);
         inventory.setItem(49, clock);
       }
 
