@@ -103,8 +103,8 @@ public class Channel {
    * 
    * @return The time remaining in seconds
    */
-  public long getRemainingTime() {
-    long time = 0;
+  public int getRemainingTime() {
+    int time = 0;
     for (ChannelTime channelTime : channelTimes) time += channelTime.getTime();
     return time;
   }
@@ -204,4 +204,11 @@ public class Channel {
 
   // you should be able to close the inventory and reopen it and continue channeling for types of channels
   // that want to allow it
+
+  // random extraneous crazy idea use case thought experiment:
+  // user is in a "dungeon" area .... 
+  // can teleport to spawn to exit
+  // can't teleport to other players ?
+  // maybe that "denuggneogn" is entered by many users and in order to "complete" it it requires everyone to reach the end and start channeling
+  // 
 }
