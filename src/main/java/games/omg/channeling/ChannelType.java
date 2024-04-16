@@ -19,7 +19,7 @@ public enum ChannelType {
     this.displayMaterial = displayMaterial;
   }
 
-  public ChannelTime create(int time) {
+  public ChannelTime length(int time) {
     return new ChannelTime(this, time);
   }
 

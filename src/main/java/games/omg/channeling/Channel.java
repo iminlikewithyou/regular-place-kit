@@ -10,8 +10,23 @@ import games.omg.channeling.states.ChannelStartedResult;
 
 /**
  * A class which represents a Channel, storing ChannelTimes and managing them.
+ * 
+ * (use some default ChannelRestrictions?)
+ * maybe a TeleportChannel class which automatically creates those channelrestrictions
+ * 
+ * Channel
+ *  .create(player)
+ *  .add(ChannelType.TRAVEL_TIME.length(10))
+ *  .channel();
  */
 public class Channel {
+
+  // need to name the channel and give it an id,
+  // so if a person leaves a channel party, they can rejoin, which includes a helpful name from the chat
+  // like: You left the "channel name" channel. You can rejoin by typing /channel join "channel name"
+
+  // boolean canRejoin
+  // boolean cancelWhenAllLeave
 
   private static HashMap<Player, Channel> channels = new HashMap<>();
 
@@ -24,68 +39,81 @@ public class Channel {
    * 
    * You should specify the players and add channel times later.
    */
-  public Channel() {
+  private Channel(List<Player> players) {
     this.channelTimes = new ArrayList<>();
-  }
-
-  /**
-   * Creates a new Channel with the specified players.
-   * 
-   * You should add channel times later.
-   * 
-   * @param players The players to add to the Channel
-   */
-  public Channel(List<Player> players) {
-    this();
     this.players = players;
   }
 
   /**
-   * Creates a new Channel with the specified player.
+   * Creates a new Channel for the specified player.
    * 
-   * You should add channel times later.
-   * 
-   * @param player The player to add to the Channel
+   * @param player The player to create the Channel for
+   * @return The created Channel
    */
-  public Channel(Player player) {
-    this();
-    this.players = new ArrayList<>();
-    this.players.add(player);
+  public static Channel create(Player player) {
+    List<Player> players = new ArrayList<>();
+    players.add(player);
+    return new Channel(players);
   }
 
   /**
-   * Creates a new Channel with the specified players.
+   * Creates a new Channel for the specified players.
    * 
-   * You should add channel times later.
-   * 
-   * @param players The players to add to the Channel
+   * @param players The players to create the Channel for
+   * @return The created Channel
    */
-  public Channel(Player... players) {
-    this();
-    this.players = new ArrayList<>();
-    for (Player player : players) this.players.add(player);
+  public static Channel create(List<Player> players) {
+    return new Channel(players);
   }
 
   /**
-   * Creates a new Channel with the specified players and channel times.
+   * Creates a new Channel for the specified players.
    * 
-   * @param players The players to add to the Channel
-   * @param channelTimes The ChannelTimes to add to the Channel
+   * @param players The players to create the Channel for
+   * @return The created Channel
    */
-  public Channel(List<Player> players, ChannelTime... channelTimes) {
-    this(players);
+  public static Channel create(Player... players) {
+    List<Player> playerList = new ArrayList<>();
+    for (Player player : players) playerList.add(player);
+    return new Channel(playerList);
+  }
+
+  /**
+   * Adds a ChannelTime to this Channel.
+   * 
+   * @param channelTime The ChannelTime to add
+   * @return This Channel
+   */
+  public Channel add(ChannelTime channelTime) {
+    for (ChannelTime ct : channelTimes) {
+      if (ct.add(channelTime)) {
+        return this;
+      }
+    }
+    if (channelTime.getTime() == 0) return this;
+    channelTimes.add(channelTime);
+    return this;
+  }
+
+  /**
+   * Adds ChannelTimes to this Channel.
+   * 
+   * @param channelTimes The ChannelTimes to add
+   * @return This Channel
+   */
+  public Channel add(List<ChannelTime> channelTimes) {
     for (ChannelTime channelTime : channelTimes) add(channelTime);
+    return this;
   }
 
   /**
-   * Creates a new Channel with the specified player and channel times.
-   * 
-   * @param player The player to add to the Channel
-   * @param channelTimes The ChannelTimes to add to the Channel
+   * Adds ChannelTimes to this Channel.
+   * @param channelTimes The ChannelTimes to add
+   * @return This Channel
    */
-  public Channel(Player player, ChannelTime... channelTimes) {
-    this(player);
+  public Channel add(ChannelTime... channelTimes) {
     for (ChannelTime channelTime : channelTimes) add(channelTime);
+    return this;
   }
 
   /**
@@ -142,23 +170,6 @@ public class Channel {
       if (channelTime.getTime() > 0) return false;
     }
     return true;
-  }
-
-  /**
-   * Adds a ChannelTime to this Channel.
-   * 
-   * @param channelTime The ChannelTime to add
-   * @return This Channel
-   */
-  public Channel add(ChannelTime channelTime) {
-    for (ChannelTime ct : channelTimes) {
-      if (ct.add(channelTime)) {
-        return this;
-      }
-    }
-    if (channelTime.getTime() == 0) return this;
-    channelTimes.add(channelTime);
-    return this;
   }
 
   // /**
