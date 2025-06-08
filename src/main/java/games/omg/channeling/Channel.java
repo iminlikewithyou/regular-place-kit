@@ -202,6 +202,9 @@ public class Channel {
         return ChannelStartedResult.ALREADY_CHANNELING;
     }
 
+    ChannelStartedEvent event = new ChannelStartedEvent(this);
+    Bukkit.getPluginManager().callEvent(event);
+
     if (isComplete()) {
       // This channel is already complete
 

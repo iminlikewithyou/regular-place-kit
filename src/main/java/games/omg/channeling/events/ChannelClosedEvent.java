@@ -5,10 +5,10 @@ import org.jetbrains.annotations.NotNull;
 
 import games.omg.channeling.Channel;
 
-public class ChannelInterruptedEvent extends ChannelEvent {
+public class ChannelClosedEvent extends ChannelEvent {
   private static final HandlerList handlers = new HandlerList();
 
-  public ChannelInterruptedEvent(@NotNull Channel channel) {
+  public ChannelClosedEvent(@NotNull Channel channel) {
     super(channel);
   }
 

@@ -1,5 +1,23 @@
 package games.omg.channeling.events;
 
-public class ChannelStartedEvent {
-  
+import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
+
+import games.omg.channeling.Channel;
+
+public class ChannelStartedEvent extends ChannelEvent {
+  private static final HandlerList handlers = new HandlerList();
+
+  public ChannelStartedEvent(@NotNull Channel channel) {
+    super(channel);
+  }
+
+  @Override
+  public HandlerList getHandlers() {
+    return handlers;
+  }
+
+  public static HandlerList getHandlerList() {
+    return handlers;
+  }
 }
