@@ -4,26 +4,31 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import games.omg.channeling.events.ChannelStartedEvent;
 import games.omg.channeling.states.ChannelStartedResult;
 
 /**
  * A class which represents a Channel, storing ChannelTimes and managing them.
  * 
  * (use some default ChannelRestrictions?)
- * maybe a TeleportChannel class which automatically creates those channelrestrictions
+ * maybe a TeleportChannel class which automatically creates those
+ * channelrestrictions
  * 
  * Channel
- *  .create(player)
- *  .add(ChannelType.TRAVEL_TIME.length(10))
- *  .channel();
+ * .create(player)
+ * .add(ChannelType.TRAVEL_TIME.length(10))
+ * .channel();
  */
 public class Channel {
 
   // need to name the channel and give it an id,
-  // so if a person leaves a channel party, they can rejoin, which includes a helpful name from the chat
-  // like: You left the "channel name" channel. You can rejoin by typing /channel join "channel name"
+  // so if a person leaves a channel party, they can rejoin, which includes a
+  // helpful name from the chat
+  // like: You left the "channel name" channel. You can rejoin by typing /channel
+  // join "channel name"
 
   // boolean canRejoin
   // boolean cancelWhenAllLeave
@@ -74,7 +79,8 @@ public class Channel {
    */
   public static Channel create(Player... players) {
     List<Player> playerList = new ArrayList<>();
-    for (Player player : players) playerList.add(player);
+    for (Player player : players)
+      playerList.add(player);
     return new Channel(playerList);
   }
 
@@ -90,7 +96,8 @@ public class Channel {
         return this;
       }
     }
-    if (channelTime.getTime() == 0) return this;
+    if (channelTime.getTime() == 0)
+      return this;
     channelTimes.add(channelTime);
     return this;
   }
@@ -102,17 +109,20 @@ public class Channel {
    * @return This Channel
    */
   public Channel add(List<ChannelTime> channelTimes) {
-    for (ChannelTime channelTime : channelTimes) add(channelTime);
+    for (ChannelTime channelTime : channelTimes)
+      add(channelTime);
     return this;
   }
 
   /**
    * Adds ChannelTimes to this Channel.
+   * 
    * @param channelTimes The ChannelTimes to add
    * @return This Channel
    */
   public Channel add(ChannelTime... channelTimes) {
-    for (ChannelTime channelTime : channelTimes) add(channelTime);
+    for (ChannelTime channelTime : channelTimes)
+      add(channelTime);
     return this;
   }
 
@@ -133,12 +143,14 @@ public class Channel {
    */
   public int getRemainingTime() {
     int time = 0;
-    for (ChannelTime channelTime : channelTimes) time += channelTime.getTime();
+    for (ChannelTime channelTime : channelTimes)
+      time += channelTime.getTime();
     return time;
   }
 
   /**
-   * Removes time from the ChannelTimes in order, removing from the next if the current one hits 0.
+   * Removes time from the ChannelTimes in order, removing from the next if the
+   * current one hits 0.
    * 
    * @param time The time to remove in seconds
    * @return The remaining time that was not removed
@@ -146,11 +158,12 @@ public class Channel {
   public int removeTime(int time) {
     for (ChannelTime channelTime : channelTimes) {
       time = channelTime.removeTime(time);
-      if (time == 0) return 0;
+      if (time == 0)
+        return 0;
     }
     return time;
   }
-  
+
   /**
    * Removes 1 second from the first ChannelTime that has time remaining.
    * 
@@ -167,30 +180,30 @@ public class Channel {
    */
   public boolean isComplete() {
     for (ChannelTime channelTime : channelTimes) {
-      if (channelTime.getTime() > 0) return false;
+      if (channelTime.getTime() > 0)
+        return false;
     }
     return true;
   }
 
   // /**
-  //  * Gets the ChannelRunner for this Channel.
-  //  * 
-  //  * @return The ChannelRunner
-  //  */
+  // * Gets the ChannelRunner for this Channel.
+  // *
+  // * @return The ChannelRunner
+  // */
   // protected ChannelRunner getRunner() {
-  //   return runner;
+  // return runner;
   // }
 
   public ChannelStartedResult channel() {
     // Check if any players are already channeling
     for (Player player : players) {
-      if (channels.containsKey(player)) return ChannelStartedResult.ALREADY_CHANNELING;
+      if (channels.containsKey(player))
+        return ChannelStartedResult.ALREADY_CHANNELING;
     }
-    
+
     if (isComplete()) {
       // This channel is already complete
-
-
 
       return ChannelStartedResult.CHANNEL_STARTED;
     } else {
@@ -201,25 +214,27 @@ public class Channel {
 
       // runner = new ChannelRunner(this);
 
-
     }
-    
+
     return ChannelStartedResult.CHANNEL_STARTED;
   }
 
   // what happens if a player leaves during the channel?
   // or dies during the channel?
-  // if multiple people are channeling, and one of them is interrupted, what happens to the others?
+  // if multiple people are channeling, and one of them is interrupted, what
+  // happens to the others?
   // what happens if a player is added during the channel?
   // what happens if a player is removed during the channel?
 
-  // you should be able to close the inventory and reopen it and continue channeling for types of channels
+  // you should be able to close the inventory and reopen it and continue
+  // channeling for types of channels
   // that want to allow it
 
   // random extraneous crazy idea use case thought experiment:
-  // user is in a "dungeon" area .... 
+  // user is in a "dungeon" area ....
   // can teleport to spawn to exit
   // can't teleport to other players ?
-  // maybe that "denuggneogn" is entered by many users and in order to "complete" it it requires everyone to reach the end and start channeling
-  // 
+  // maybe that "denuggneogn" is entered by many users and in order to "complete"
+  // it it requires everyone to reach the end and start channeling
+  //
 }

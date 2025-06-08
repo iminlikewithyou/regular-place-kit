@@ -9,5 +9,5 @@ public enum ChannelStartedResult {
   /**
    * The player has started channeling.
    */
-  CHANNEL_STARTED
+  CHANNEL_STARTED;
 }

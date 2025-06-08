@@ -4,7 +4,7 @@ package games.omg.channeling;
  * Represents a channel time for a specific type.
  */
 public class ChannelTime {
-  
+
   private ChannelType type;
   private int time;
 
@@ -43,8 +43,10 @@ public class ChannelTime {
   /**
    * Removes time from this ChannelTime.
    * 
-   * If the time you're trying to remove is greater than the time in this ChannelTime,
-   * the time in this ChannelTime will be set to 0 and the remaining time will be returned.
+   * If the time you're trying to remove is greater than the time in this
+   * ChannelTime,
+   * the time in this ChannelTime will be set to 0 and the remaining time will be
+   * returned.
    * 
    * @param time The time to remove in seconds
    * @return The remaining time that was not removed
@@ -58,7 +60,7 @@ public class ChannelTime {
     this.time -= time;
     return 0;
   }
-  
+
   /**
    * Adds time to this ChannelTime if the ChannelTime is the same type.
    * 
@@ -72,11 +74,13 @@ public class ChannelTime {
     }
     return false;
   }
-  
+
   @Override
   public boolean equals(Object o) {
-    if (o == this) return true;
-    if (!(o instanceof ChannelTime)) return false;
+    if (o == this)
+      return true;
+    if (!(o instanceof ChannelTime))
+      return false;
     ChannelTime ct = (ChannelTime) o;
     return ct.getType().equals(type);
   }
